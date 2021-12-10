@@ -4,16 +4,7 @@ import argparse
 from panflute import *
 
 
-def combine_elements(elem, additional_elements):
-    if not additional_elements:
-        return elem
-
-    return additional_elements + [elem]
-
-
 def action(elem, doc):
-    additional_elements = None
-
     if isinstance(elem, Strong):
         return Span(*elem.content)
 
@@ -22,19 +13,19 @@ def action(elem, doc):
 
     if isinstance(elem, Para) and stringify(elem).lower().startswith("chapter"):
         doc.requires_chapter_heading = True
-        return combine_elements(Header(*elem.content), additional_elements)
+        return Header(*elem.content)
     if isinstance(elem, Para) and doc.requires_chapter_heading:
         doc.requires_chapter_heading = False
-        return combine_elements(Header(*elem.content, level=2), additional_elements)
+        return Header(*elem.content, level=2)
 
     if isinstance(elem, Para) and stringify(elem).lower().startswith("article"):
         doc.requires_article_heading = True
-        return combine_elements(Header(*elem.content, level=3), additional_elements)
+        return Header(*elem.content, level=3)
     if isinstance(elem, Para) and doc.requires_article_heading:
         doc.requires_article_heading = False
-        return combine_elements(Header(*elem.content, level=4), additional_elements)
+        return Header(*elem.content, level=4)
 
-    return combine_elements(elem, additional_elements)
+    return elem
 
 def prepare(doc):
     doc.in_list = False
