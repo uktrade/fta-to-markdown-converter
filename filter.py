@@ -4,26 +4,37 @@ import argparse
 from panflute import *
 
 
-def action(elem, doc):
+def remove_strong(elem, doc):
     if isinstance(elem, Strong):
         return Span(*elem.content)
 
+    return elem
+
+
+def create_heading(elem, level=1):
+    removed_strong = elem.walk(remove_strong)
+
+    return Header(*removed_strong.content, level=level)
+
+
+
+def action(elem, doc):
     if isinstance(elem, BlockQuote):
         return [e for e in elem.content if not isinstance(e, Null)]
 
     if isinstance(elem, Para) and stringify(elem).lower().startswith("chapter"):
         doc.requires_chapter_heading = True
-        return Header(*elem.content)
+        return create_heading(elem)
     if isinstance(elem, Para) and doc.requires_chapter_heading:
         doc.requires_chapter_heading = False
-        return Header(*elem.content, level=2)
+        return create_heading(elem, level=2)
 
     if isinstance(elem, Para) and stringify(elem).lower().startswith("article"):
         doc.requires_article_heading = True
-        return Header(*elem.content, level=3)
+        return create_heading(elem, level=3)
     if isinstance(elem, Para) and doc.requires_article_heading:
         doc.requires_article_heading = False
-        return Header(*elem.content, level=4)
+        return create_heading(elem, level=4)
 
     return elem
 
