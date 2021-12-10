@@ -27,14 +27,9 @@ def action(elem, doc):
 
     return elem
 
-def prepare(doc):
-    doc.in_list = False
-    doc.requires_chapter_heading = False
-    doc.requires_article_heading = False
-    doc.list_items = []
 
 def main(doc=None):
-    return run_filter(action, prepare=prepare, doc=doc) 
+    return run_filter(action, doc=doc) 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog="COMMAND")
