@@ -62,7 +62,12 @@ def main(doc=None):
     return run_filter(action, prepare=prepare, doc=doc) 
 
 if __name__ == '__main__':
-    # with open("chapter5.json", encoding="utf-8") as f:
-    #     doc = load(f)
-    #     main(doc)
-    main()
+    parser = argparse.ArgumentParser(description="Convert from docx to md")
+    parser.add_argument("input_filename")
+    parser.add_argument("output_filename")
+    args = parser.parse_args()
+    with open(args.input_filename, encoding="utf-8") as f:
+        doc = load(f)
+    doc = main(doc)
+    with open(args.output_filename, "w", encoding="utf-8") as f:
+        dump(doc, f)
