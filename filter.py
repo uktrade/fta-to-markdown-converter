@@ -1,5 +1,5 @@
 #!/bin/bash python
-import re
+import argparse
 
 from panflute import *
 
@@ -19,22 +19,6 @@ def action(elem, doc):
 
     if isinstance(elem, BlockQuote):
         return [e for e in elem.content if not isinstance(e, Null)]
-
-    if isinstance(elem, Para) and re.match("^\d+\.", stringify(elem)):
-        if not doc.in_list:
-            doc.in_list = True
-            doc.list_items = [ListItem(Para(*elem.content[2:]))]
-            return Null
-        elif doc.in_list:
-            doc.list_items.append(ListItem(Para(*elem.content[2:])))
-            return Null
-    elif isinstance(elem, Para) and re.match("^\([a-z]\)", stringify(elem)):
-        current_list_item = doc.list_items[-1]
-        current_list_item.content += [OrderedList(ListItem(Para(*elem.content[2:])))]
-        return Null
-    elif isinstance(elem, Para) and doc.in_list and stringify(elem).strip():
-        doc.in_list = False
-        additional_elements = [OrderedList(*doc.list_items)]
 
     if isinstance(elem, Para) and stringify(elem).lower().startswith("chapter"):
         doc.requires_chapter_heading = True
