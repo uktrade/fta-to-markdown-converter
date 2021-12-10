@@ -46,12 +46,23 @@ def main(doc=None):
     return run_filter(action, prepare=prepare, doc=doc) 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Convert from docx to md")
-    parser.add_argument("input_filename")
-    parser.add_argument("output_filename")
-    args = parser.parse_args()
-    with open(args.input_filename, encoding="utf-8") as f:
-        doc = load(f)
-    doc = main(doc)
-    with open(args.output_filename, "w", encoding="utf-8") as f:
-        dump(doc, f)
+    parser = argparse.ArgumentParser(prog="COMMAND")
+
+    subparsers = parser.add_subparsers()
+
+    parser_stream = subparsers.add_parser("stream", help="Stream from stdin to stdout")
+
+    parser_files = subparsers.add_parser("files", help="Input and output to files")
+    parser_files.add_argument("input_filename")
+    parser_files.add_argument("output_filename")
+
+    parsed_args = parser.parse_args()
+
+    if hasattr(parsed_args, "input_filename"):
+        with open(parsed_args.input_filename, encoding="utf-8") as f:
+            doc = load(f)
+        doc = main(doc)
+        with open(parsed_args.output_filename, "w", encoding="utf-8") as f:
+            dump(doc, f)
+    else:
+        main()
