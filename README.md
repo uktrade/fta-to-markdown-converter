@@ -6,6 +6,8 @@ A Pandoc filter to convert FTA docx chapter files into Markdown files.
 
 [Install Pandoc](https://pandoc.org/installing.html) for your operating system.
 
+Then install the Python requirements.
+
     $ pip install -r requirements.txt
 
 ## Usage
